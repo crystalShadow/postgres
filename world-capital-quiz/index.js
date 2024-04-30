@@ -1,14 +1,32 @@
 import express from "express";
 import bodyParser from "body-parser";
+import pg from "pg";
+
+
+const db = new pg.Client({
+  user: "postgres",
+  host: "localhost",
+  database: "worldInfo",
+  password: "root",
+  port: 5432,
+});
+
+db.connect();
+
+let quiz = [];
+db.query("SELECT * FROM worldcapitals", (err, res) => {
+  if (err) {
+    console.error("Error executing query", err.stack);
+  } else {
+    quiz = res.rows;
+  }
+  db.end();
+});
 
 const app = express();
 const port = 3000;
 
-let quiz = [
-  { country: "France", capital: "Paris" },
-  { country: "United Kingdom", capital: "London" },
-  { country: "United States of America", capital: "New York" },
-];
+
 
 let totalCorrect = 0;
 
